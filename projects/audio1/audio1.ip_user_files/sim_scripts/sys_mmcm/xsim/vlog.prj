@@ -1,0 +1,6 @@
+verilog xil_defaultlib "../../../../ex6.srcs/sources_1/ip/sys_mmcm/sys_mmcm_clk_wiz.v" --include "../../../ipstatic"
+verilog xil_defaultlib "../../../../ex6.srcs/sources_1/ip/sys_mmcm/sys_mmcm.v" --include "../../../ipstatic"
+
+verilog xil_defaultlib "glbl.v"
+
+nosort
