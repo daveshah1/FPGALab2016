@@ -115,6 +115,7 @@ architecture Behavioral of audio_top is
   
   --Digital audio I/Os
   signal left_line, right_line, left_hp, right_hp : std_logic_vector(23 downto 0);
+  signal mclk_int, bclk_int, lrclk_int, codec_dout_int : std_logic;
   
   signal segments_ck50 : std_logic_vector(41 downto 0);
   signal segments : std_logic_vector(41 downto 0);
@@ -125,13 +126,17 @@ architecture Behavioral of audio_top is
   signal audio_valid : std_logic;
   
   --BEGIN DEBUG
-  component ila_0 is
-    port(
-      clk : in std_logic;
-      probe0 : in std_logic_vector(23 downto 0);
-      probe1 : in std_logic_vector(23 downto 0);
-      probe2 : in std_logic_vector(0 downto 0));
-  end component;
+--  component ila_0 is
+--    port(
+--      clk : in std_logic;
+--      probe0 : in std_logic_vector(23 downto 0);
+--      probe1 : in std_logic_vector(23 downto 0);
+--      probe2 : in std_logic_vector(0 downto 0);
+--      probe3 : in std_logic_vector(0 downto 0);
+--      probe4 : in std_logic_vector(0 downto 0);
+--      probe5 : in std_logic_vector(0 downto 0);
+--      probe6 : in std_logic_vector(0 downto 0));
+--  end component;
 --  signal probe0 : std_logic_vector(1 downto 0);
   --END DEBUG
 begin
@@ -216,11 +221,16 @@ begin
       left_out => left_line,
       right_out => right_line,
       
-      codec_mclk => codec_mclk,
-      codec_bclk => codec_bclk,
-      codec_lrclk => codec_lrclk,
+      codec_mclk => mclk_int,
+      codec_bclk => bclk_int,
+      codec_lrclk => lrclk_int,
       codec_din => codec_din,
-      codec_dout => codec_dout);
+      codec_dout => codec_dout_int);
+  
+  codec_mclk <= mclk_int;
+  codec_bclk <= bclk_int;
+  codec_lrclk <= lrclk_int;
+  codec_dout <= codec_dout_int;
   
   codec_ctl : entity work.adau1761_control
     port map(
@@ -297,11 +307,15 @@ begin
   
   --BEGIN DEBUG
   --probe0 <= codec_sda & codec_scl;
-  dbg0 : ila_0
-    port map(
-      clk => audio_clock,
-      probe0 => left_line,
-      probe1 => left_hp,
-      probe2(0) => audio_valid);
+--  dbg0 : ila_0
+--    port map(
+--      clk => audio_clock,
+--      probe0 => left_line,
+--      probe1 => left_hp,
+--      probe2(0) => audio_valid,
+--      probe3(0) => lrclk_int,
+--      probe4(0) => bclk_int,
+--      probe5(0) => codec_dout_int,
+--      probe6(0) => codec_din);
   --END DEBUG
 end Behavioral;

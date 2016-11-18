@@ -9,17 +9,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="11142430fs"></ZoomStartTime>
-      <ZoomEndTime time="16742431fs"></ZoomEndTime>
-      <Cursor1Time time="2515000fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="8409927fs"></ZoomEndTime>
+      <Cursor1Time time="15332000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="192"></NameColumnWidth>
-      <ValueColumnWidth column_width="152"></ValueColumnWidth>
+      <NameColumnWidth column_width="139"></NameColumnWidth>
+      <ValueColumnWidth column_width="237"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="3" />
-   <wave_markers>
-   </wave_markers>
+   <WVObjectSize size="7" />
    <wvobject type="logic" fp_name="audio_valid">
       <obj_property name="DisplayName">FullPathName</obj_property>
       <obj_property name="ElementShortName">audio_valid</obj_property>
@@ -38,6 +36,30 @@
       <obj_property name="ElementShortName">left_line[23:0]</obj_property>
       <obj_property name="ObjectShortName">left_line[23:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="bclk_int">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">bclk_int</obj_property>
+      <obj_property name="ObjectShortName">bclk_int</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="lrclk_int">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">lrclk_int</obj_property>
+      <obj_property name="ObjectShortName">lrclk_int</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="codec_dout_int">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">codec_dout_int</obj_property>
+      <obj_property name="ObjectShortName">codec_dout_int</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="codec_din_IBUF">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">codec_din_IBUF</obj_property>
+      <obj_property name="ObjectShortName">codec_din_IBUF</obj_property>
       <obj_property name="LABELRADIX">true</obj_property>
    </wvobject>
 </wave_config>

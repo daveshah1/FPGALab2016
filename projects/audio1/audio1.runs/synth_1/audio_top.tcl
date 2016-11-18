@@ -3,6 +3,7 @@
 # 
 
 set_param xicom.use_bs_reader 1
+set_msg_config -id {Common 17-41} -limit 10000000
 set_msg_config -id {HDL 9-1061} -limit 100000
 set_msg_config -id {HDL 9-1654} -limit 100000
 create_project -in_memory -part xc7k325tffg900-2
@@ -24,8 +25,6 @@ add_files -quiet /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/audio_m
 set_property used_in_implementation false [get_files /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/audio_mmcm/audio_mmcm.dcp]
 add_files -quiet /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/sys_mmcm/sys_mmcm.dcp
 set_property used_in_implementation false [get_files /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/sys_mmcm/sys_mmcm.dcp]
-add_files -quiet /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/ila_0/ila_0.dcp
-set_property used_in_implementation false [get_files /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/ila_0/ila_0.dcp]
 read_verilog -library xil_defaultlib /home/dave/lab/exercises/echo.v
 read_vhdl -library xil_defaultlib {
   /home/dave/lab/video-misc/video_timing_ctrl.vhd

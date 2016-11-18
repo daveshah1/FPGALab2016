@@ -49,7 +49,7 @@ architecture Behavioral of codec_audio_if is
   signal inl_shiftreg, inr_shiftreg, outl_shiftreg, outr_shiftreg : std_logic_vector(bit_depth - 1 downto 0);
 
   constant data_sample_pos : natural := bclk_period / 2;
-  constant data_shiftout_pos : natural := bclk_period - 1;
+  constant data_shiftout_pos : natural := 1;
 
 begin
 
