@@ -25,7 +25,7 @@ add_files -quiet /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/audio_m
 set_property used_in_implementation false [get_files /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/audio_mmcm/audio_mmcm.dcp]
 add_files -quiet /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/sys_mmcm/sys_mmcm.dcp
 set_property used_in_implementation false [get_files /home/dave/lab/projects/audio1/audio1.srcs/sources_1/ip/sys_mmcm/sys_mmcm.dcp]
-read_verilog -library xil_defaultlib /home/dave/lab/exercises/echo.v
+read_verilog -library xil_defaultlib /home/dave/lab/exercises/echo_multi.v
 read_vhdl -library xil_defaultlib {
   /home/dave/lab/video-misc/video_timing_ctrl.vhd
   /home/dave/lab/audio_if/codec_i2c_control.vhd

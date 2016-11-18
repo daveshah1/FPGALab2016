@@ -112,6 +112,13 @@ architecture Behavioral of audio_top is
       audio_out : out std_logic_vector(23 downto 0));
   end component;
   
+  component echo_multi is
+    port(
+      clock : in std_logic;
+      valid : in std_logic;
+      audio_in : in std_logic_vector(23 downto 0);
+      audio_out : out std_logic_vector(23 downto 0));
+  end component;
   
   --Digital audio I/Os
   signal left_line, right_line, left_hp, right_hp : std_logic_vector(23 downto 0);
@@ -189,14 +196,14 @@ begin
       CE => '1',
       CLR => reset,
       I => i2c_clk_div_pre);  
-  echo_l : echo
+  echo_l : echo_multi
     port map(
       clock => audio_clock,
       valid => audio_valid,
       audio_in => left_line,
       audio_out => left_hp);
  
- echo_r : echo
+ echo_r : echo_multi
       port map(
         clock => audio_clock,
         valid => audio_valid,
