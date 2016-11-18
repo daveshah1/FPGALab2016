@@ -45,9 +45,9 @@ begin
         when "0" & x"31" =>
           data <= x"401E41"; --Right playback mixer: unmute right DAC in, mute aux input in
         when "0" & x"32" =>
-          data <= x"4023C1"; --Left headphone out: -9dB volume, HP output enabled
+          data <= x"4023C3"; --Left headphone out: -9dB volume, HP output enabled
         when "0" & x"33" =>
-          data <= x"4024C1"; --Right headphone out: -9dB volume, HP output disabled
+          data <= x"4024C3"; --Right headphone out: -9dB volume, HP output disabled
         when "0" & x"34" =>
           data <= x"402903"; --Playback power management: no power saving, enable L+R outputs
         when "0" & x"40" =>

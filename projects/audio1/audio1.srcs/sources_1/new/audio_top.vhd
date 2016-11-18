@@ -49,7 +49,17 @@ entity audio_top is
   btn_r : in std_logic;
   btn_u : in std_logic;
   btn_d : in std_logic;
-  btn_c : in std_logic
+  btn_c : in std_logic;
+  
+  codec_sda : inout std_logic;
+  codec_scl : inout std_logic;
+  codec_addr : out std_logic_vector(1 downto 0);
+  
+  codec_mclk : out std_logic;
+  codec_bclk : out std_logic;
+  codec_lrclk : out std_logic;
+  codec_din : in std_logic;
+  codec_dout : out std_logic
   );
 end audio_top;
 
@@ -75,6 +85,13 @@ architecture Behavioral of audio_top is
       clk50 : out std_logic);
   end component;
   
+ component audio_mmcm is
+    port(
+      sysclk : in std_logic;
+      audio_clock : out std_logic;
+      i2c_clock : out std_logic);
+  end component;
+  
   component ex6_top is
     port(
       CLOCK_50 : in std_logic;
@@ -87,10 +104,36 @@ architecture Behavioral of audio_top is
       HEX4 : out std_logic_vector(6 downto 0));
   end component;
   
+  component echo is
+    port(
+      clock : in std_logic;
+      valid : in std_logic;
+      audio_in : in std_logic_vector(23 downto 0);
+      audio_out : out std_logic_vector(23 downto 0));
+  end component;
+  
+  
+  --Digital audio I/Os
+  signal left_line, right_line, left_hp, right_hp : std_logic_vector(23 downto 0);
+  
   signal segments_ck50 : std_logic_vector(41 downto 0);
   signal segments : std_logic_vector(41 downto 0);
   signal key : std_logic_vector(3 downto 0);
   signal clock_50 : std_logic;
+  
+  signal audio_clock, i2c_clk_in, i2c_clk_div_pre, i2c_clk_div : std_logic;
+  signal audio_valid : std_logic;
+  
+  --BEGIN DEBUG
+  component ila_0 is
+    port(
+      clk : in std_logic;
+      probe0 : in std_logic_vector(23 downto 0);
+      probe1 : in std_logic_vector(23 downto 0);
+      probe2 : in std_logic_vector(0 downto 0));
+  end component;
+--  signal probe0 : std_logic_vector(1 downto 0);
+  --END DEBUG
 begin
   reset <= not reset_n;
   
@@ -115,6 +158,79 @@ begin
     port map(
       sysclk => sys_clock,
       clk50 => clock_50);
+ 
+  mmcm2 : audio_mmcm
+    port map(
+      sysclk => sys_clock,
+      audio_clock => audio_clock,
+      i2c_clock => i2c_clk_in);
+ 
+ --Divide 5MHz from MMCM to slower I2C clock, as sufficiently slow clock cannot be generated
+  i2c_clkdiv : BUFR
+    generic map(
+      BUFR_DIVIDE => "8",
+      SIM_DEVICE => "7SERIES")
+    port map(
+      O => i2c_clk_div_pre,
+      CE => '1',
+      CLR => reset,
+      I => i2c_clk_in);
+  i2c_clkdiv2 : BUFR
+    generic map(
+      BUFR_DIVIDE => "8",
+      SIM_DEVICE => "7SERIES")
+    port map(
+      O => i2c_clk_div,
+      CE => '1',
+      CLR => reset,
+      I => i2c_clk_div_pre);  
+  echo_l : echo
+    port map(
+      clock => audio_clock,
+      valid => audio_valid,
+      audio_in => left_line,
+      audio_out => left_hp);
+ 
+ echo_r : echo
+      port map(
+        clock => audio_clock,
+        valid => audio_valid,
+        audio_in => right_line,
+        audio_out => right_hp);
+--  left_hp <= left_line;
+--  right_hp <= right_line;
+  
+  codec_if : entity work.codec_audio_if
+    generic map(
+      fs_ratio => 1024,
+      bits_per_frame => 64,
+      bit_depth => 24,
+      lrclk_to_data => 1)
+    port map(
+      clock => audio_clock,
+      reset => reset,
+      data_valid => audio_valid,
+      
+      left_in => left_hp,
+      right_in => right_hp,
+      left_out => left_line,
+      right_out => right_line,
+      
+      codec_mclk => codec_mclk,
+      codec_bclk => codec_bclk,
+      codec_lrclk => codec_lrclk,
+      codec_din => codec_din,
+      codec_dout => codec_dout);
+  
+  codec_ctl : entity work.adau1761_control
+    port map(
+      reset => reset,
+      clock => i2c_clk_div,
+      i2c_sda => codec_sda,
+      i2c_sck => codec_scl,
+      loading_out => open);
+  
+  codec_addr <= "11";
   
   dvi_tx : entity work.dvi_tx
     port map(
@@ -129,26 +245,14 @@ begin
       tmds_clk => hdmi_clk,
       tmds_d0 => hdmi_d0,
       tmds_d1 => hdmi_d1,
-      tmds_d2 => hdmi_d2
-    );
-  
-  legacy : ex6_top
-    port map(
-      CLOCK_50 => clock_50,
-      KEY => key,
-      SW => sw,
-      HEX0 => segments(41 downto 35),
-      HEX1 => segments(34 downto 28),
-      HEX2 => segments(27 downto 21),
-      HEX3 => segments(20 downto 14),
-      HEX4 => segments(13 downto 7));
-  
+      tmds_d2 => hdmi_d2);
+      
   key(0) <= not btn_l;
   key(1) <= not btn_c;
   key(2) <= not btn_r;
   key(3) <= not btn_u;
   
-  segments(6 downto 0) <= "1000000";
+  segments <= "100000010000001000000100000010000001000000";
   
   process(clock_50)
   begin
@@ -190,4 +294,14 @@ begin
       pixel_data => dvi_data);
   
   leds <= x"00";
+  
+  --BEGIN DEBUG
+  --probe0 <= codec_sda & codec_scl;
+  dbg0 : ila_0
+    port map(
+      clk => audio_clock,
+      probe0 => left_line,
+      probe1 => left_hp,
+      probe2(0) => audio_valid);
+  --END DEBUG
 end Behavioral;
