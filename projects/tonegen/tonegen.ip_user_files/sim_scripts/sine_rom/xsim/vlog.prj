@@ -1,0 +1,5 @@
+verilog xil_defaultlib "../../../../tonegen.srcs/sources_1/ip/sine_rom/sim/sine_rom.v" 
+
+verilog xil_defaultlib "glbl.v"
+
+nosort
