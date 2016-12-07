@@ -104,13 +104,17 @@ architecture Behavioral of audio_top is
       HEX4 : out std_logic_vector(6 downto 0));
   end component;
   
-  component fixed_tone is
+  component variable_tone is
     port(
       clock : in std_logic;
       valid : in std_logic;
-      audio_out : out std_logic_vector(23 downto 0));
+      audio_out : out std_logic_vector(23 downto 0);
+      freq_set : in std_logic_vector(9 downto 0);
+      freq_disp : out std_logic_vector(34 downto 0)
+      );
   end component;
   
+  signal tone_adj : std_logic_vector(9 downto 0);
   signal tone_sig : std_logic_vector(23 downto 0);
   
   --Digital audio I/Os
@@ -142,11 +146,14 @@ architecture Behavioral of audio_top is
 begin
   reset <= not reset_n;
   
-  tg : fixed_tone port map(
+  tg : variable_tone port map(
     clock => audio_clock,
     valid => audio_valid,
-    audio_out => tone_sig);
+    audio_out => tone_sig,
+    freq_set => tone_adj,
+    freq_disp => segments(41 downto 7));
   
+  tone_adj <= sw & "00";
   left_hp <= tone_sig;
   right_hp <= tone_sig;
   
@@ -258,7 +265,7 @@ begin
   key(2) <= not btn_r;
   key(3) <= not btn_u;
   
-  segments <= "100000010000001000000100000010000001000000";
+  segments(6 downto 0) <= "1000000";
   
   process(clock_50)
   begin
