@@ -3,8 +3,8 @@
 // Function: Converts a 16-bit binary number to 5 digits BCD
 //            .... it uses a shift-and-add3 algorithm
 // Creator:  Peter Cheung
-// Version:  1.0
-// Date:     18 Sept 2016
+// Version:  2.0  (Correct mistake - problem with numbers 0x5000 or larger)
+// Date:     24 Nov 2016
 //------------------------------
 //   For more explanation of how this work, see 
 //     ... instructions on wwww.ee.ic.ac.uk/pcheung/teaching/E2_experiment
@@ -16,10 +16,10 @@ module bin2bcd_16 (B, BCD_0, BCD_1, BCD_2, BCD_3, BCD_4);
 	
 	wire [3:0]	w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13;
 	wire [3:0]	w14,w15,w16,w17,w18,w19,w20,w21,w22,w23,w24,w25;
-	wire [3:0]	w26,w27,w28,w29;
-	wire [3:0]	a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13;
+	wire [3:0]	w26,w27,w28,w29,w30,w31,w32,w33,w34,w35;
+	wire [3:0]	a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13;
 	wire [3:0]	a14,a15,a16,a17,a18,a19,a20,a21,a22,a23,a24,a25;
-	wire [3:0]	a26,a27,a28,a29;
+	wire [3:0]	a26,a27,a28,a29,a30,a31,a32,a33,a34,a35;
 
 	// Instantiate a tree of add3-if-greater than or equal to 5 cells
 	//  ... input is w_n, and output is a_n
@@ -52,44 +52,56 @@ module bin2bcd_16 (B, BCD_0, BCD_1, BCD_2, BCD_3, BCD_4);
 	add3_ge5 A27 (w27,a27);
 	add3_ge5 A28 (w28,a28);
 	add3_ge5 A29 (w29,a29);
+	add3_ge5 A30 (w30,a30);
+	add3_ge5 A31 (w31,a31);
+	add3_ge5 A32 (w32,a32);
+	add3_ge5 A33 (w33,a33);
+	add3_ge5 A34 (w34,a34);
+	add3_ge5 A35 (w35,a35);
 		
 	// wire the tree of add3 modules together
-	assign  w1 = {B[14:11]};		// wn is the input port to module An
-	assign  w2 = {a1[2:0], B[10]};
-	assign  w3 = {1'b0, B[15], a1[3], a2[3]};
-	assign  w4 = {a2[2:0], B[9]};
-	assign  w5 = {a3[2:0], a4[3]};
-	assign  w6 = {a4[2:0], B[8]};
-	assign  w7 = {a5[2:0], a6[3]};
-	assign  w8 = {a6[2:0], B[7]};
-	assign  w9 = {1'b0, a3[3], a5[3], a7[3]};
-	assign  w10 = {a7[2:0], a8[3]};
-	assign  w11 = {a8[2:0], B[6]};
-	assign  w12 = {a9[2:0], a10[3]};
+	assign  w1 = {1'b0,B[15:13]};		// w_n is the input port to module a_n
+	assign  w2 = {a1[2:0], B[12]};		
+	assign  w3 = {a2[2:0], B[11]};		
+	assign  w4 = {1'b0,a1[3],a2[3],a3[3]};
+	assign  w5 = {a3[2:0], B[10]};
+	assign  w6 = {a4[2:0], a5[3]};
+	assign  w7 = {a5[2:0], B[9]};
+	assign  w8 = {a6[2:0], a7[3]};
+	assign  w9 = {a7[2:0], B[8]};
+	assign  w10 = {1'b0, a4[3], a6[3], a8[3]};
+	assign  w11 = {a8[2:0], a9[3]};
+	assign  w12 = {a9[2:0], B[7]};
 	assign  w13 = {a10[2:0], a11[3]};
-	assign  w14 = {a11[2:0], B[5]};
-	assign  w15 = {a12[2:0], a13[3]};
+	assign  w14 = {a11[2:0], a12[3]};
+	assign  w15 = {a12[2:0], B[6]};
 	assign  w16 = {a13[2:0], a14[3]};
-	assign  w17 = {a14[2:0], B[4]};
-	assign  w18 = {1'b0, a9[3], a12[3], a15[3]};
-	assign  w19 = {a15[2:0], a16[3]};
+	assign  w17 = {a14[2:0], a15[3]};
+	assign  w18 = {a15[2:0], B[5]};
+	assign  w19 = {1'b0, a10[3], a13[3], a16[3]};
 	assign  w20 = {a16[2:0], a17[3]};
-	assign  w21 = {a17[2:0], B[3]};
-	assign  w22 = {a18[2:0], a19[3]};
+	assign  w21 = {a17[2:0], a18[3]};
+	assign  w22 = {a18[2:0], B[4]};
 	assign  w23 = {a19[2:0], a20[3]};
 	assign  w24 = {a20[2:0], a21[3]};
-	assign  w25 = {a21[2:0], B[2]};
-	assign  w26 = {a22[2:0], a23[3]};
+	assign  w25 = {a21[2:0], a22[3]};
+	assign  w26 = {a22[2:0], B[3]};
 	assign  w27 = {a23[2:0], a24[3]};
 	assign  w28 = {a24[2:0], a25[3]};
-	assign  w29 = {a25[2:0], B[1]};
+	assign  w29 = {a25[2:0], a26[3]};
+	assign  w30 = {a26[2:0], B[2]};
+	assign  w31 = {1'b0,a19[3], a23[3], a27[3]};
+	assign  w32 = {a27[2:0], a28[3]};
+	assign  w33 = {a28[2:0], a29[3]};
+	assign  w34 = {a29[2:0], a30[3]};
+	assign  w35 = {a30[2:0], B[1]};
 	
 	// connect up to four BCD digit outputs	
-	assign BCD_0 = {a29[2:0],B[0]};
-	assign BCD_1 = {a28[2:0],a29[3]};
-	assign BCD_2 = {a27[2:0],a28[3]};
-	assign BCD_3 = {a26[2:0],a27[3]};
-	assign BCD_4 = {1'b0, a18[3], a22[3], a26[3]};	
+	assign BCD_0 = {a35[2:0],B[0]};
+	assign BCD_1 = {a34[2:0],a35[3]};
+	assign BCD_2 = {a33[2:0],a34[3]};
+	assign BCD_3 = {a32[2:0],a33[3]};
+	assign BCD_4 = {a31[2:0],a32[3]};	
 endmodule
 
 	
