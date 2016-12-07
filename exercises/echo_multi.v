@@ -15,10 +15,14 @@ module echo_multi(clock, valid, audio_in, audio_out);
     //Registers to improve timing perfomance
     if(valid_dly == 1'b1) begin
       xt <= {audio_in[23], audio_in}; //just sign extend
-      xdly <= {{2{fifo_out[23]}}, fifo_out[22:1]}; //sign extend and divide by 2
+      xdly <= {{2{fifo_out[23]}}, fifo_out[23:1]}; //sign extend and divide by 2
     end;
     if(valid == 1'b1) begin
-      audio_out <= y[24:1];
+      //Saturate instead of wrapping around
+      if(y[24] == y[23])
+        audio_out <= y[23:0];
+      else
+        audio_out <= {y[24], {22{1'b0}}};
     end;
     //Delay FIFO inputs by 1 for correct behaviour
     valid_dly <= valid;

@@ -313,7 +313,7 @@ begin
   leds <= x"00";
   
   --BEGIN DEBUG
-  --probe0 <= codec_sda & codec_scl;
+--  probe0 <= codec_sda & codec_scl;
 --  dbg0 : ila_0
 --    port map(
 --      clk => audio_clock,
