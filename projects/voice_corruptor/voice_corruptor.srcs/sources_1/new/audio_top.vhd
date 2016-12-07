@@ -109,7 +109,8 @@ architecture Behavioral of audio_top is
       clock : in std_logic;
       valid : in std_logic;
       audio_in : in std_logic_vector(23 downto 0);
-      audio_out : out std_logic_vector(23 downto 0));
+      audio_out : out std_logic_vector(23 downto 0);
+      sw : in std_logic_vector(7 downto 0));
   end component;
   
   --Digital audio I/Os
@@ -193,14 +194,16 @@ begin
       clock => audio_clock,
       valid => audio_valid,
       audio_in => left_line,
-      audio_out => left_hp);
+      audio_out => left_hp,
+      sw => sw);
  
  vc_r : corruptor
       port map(
         clock => audio_clock,
         valid => audio_valid,
         audio_in => right_line,
-        audio_out => right_hp);
+        audio_out => right_hp,
+        sw => sw);
 --  left_hp <= left_line;
 --  right_hp <= right_line;
   
