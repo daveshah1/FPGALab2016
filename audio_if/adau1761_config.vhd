@@ -40,6 +40,8 @@ begin
           data <= x"401700"; --Converter: first DAC pair, 128x ADC and DAC oversampling, Fs sampling rate
         when "0" & x"23" =>
           data <= x"401800"; --Converter: first ADC pair
+        when "0" & x"24" =>
+          data <= x"401903"; --ADC Control: Stereo, normal polarity, no de-emphasis, both ADCs enabled
         when "0" & x"30" =>
           data <= x"401C21"; --Left playback mixer: unmute left DAC in, mute aux input in
         when "0" & x"31" =>
@@ -57,8 +59,14 @@ begin
         when "0" & x"42" =>
           data <= x"402C00"; --Right DAC: no digital attenuation
         when "0" & x"50" =>
-          data <= x"40F97F"; --All clocks enabled
+          data <= x"40F201"; --Route serial input 0 to DACs
         when "0" & x"51" =>
+          data <= x"40F301"; --Route ADCs to serial output 0
+        when "0" & x"52" =>
+          data <= x"40F400"; --Enable clocks and serial IO
+        when "0" & x"60" =>
+          data <= x"40F97F"; --All clocks enabled
+        when "0" & x"61" =>
           data <= x"40FA01"; --Clock generator 1 enabled
 				when others =>
 					data <= x"000000";
